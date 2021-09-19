@@ -6,21 +6,12 @@ const cors = require('cors')({ origin: true });
 const Busboy = require('busboy');
 const fs = require('fs');
 const UUID = require('uuid').v4;
-
-// const gcconfig = {
-//   projectId: '',
-//   keyFileName: 'graphite-cell-321207-firebase-adminsdk-aoqar-6289780854.json',
-// };
-// const gcs = require('@google-cloud/storage')(gcconfig);
 const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
   projectId: 'graphite-cell-321207',
   keyFileName: 'graphite-cell-321207-firebase-adminsdk-aoqar-6289780854.json',
 });
-
-// Create and Deploy Your First Cloud Functions
-// https://firebase.google.com/docs/functions/write-firebase-functions
 
 exports.helloWorld = functions.https.onRequest((request, response) => {
   functions.logger.info('Hello logs!', { structuredData: true });
@@ -47,19 +38,6 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
     busboy.on('finish', () => {
       const bucket = storage.bucket('graphite-cell-321207.appspot.com');
       let uuid = UUID();
-
-      //   const data = await bucket.upload(resizePath, {
-      //     destination: join(bucketDir, resizeName),
-      //   });
-      //   const file = data[0];
-      //   const signedUrlData = await file.getSignedUrl({
-      //     action: 'read',
-      //     expires: '03-17-2025',
-      //   });
-      //   const url = signedUrlData[0];
-
-      // ("https://firebasestorage.googleapis.com/v0/b/" + bucket.name + "/o/" + encodeURIComponent(file.name) + "?alt=media&token=" + uuid);
-
       bucket
         .upload(uploadData.file, {
           uploadType: 'media',
@@ -79,24 +57,6 @@ exports.uploadFile = functions.https.onRequest((req, res) => {
             expires: '03-17-2425',
           });
           const url = signedUrlData[0];
-
-          //   let url = Promise.resolve(
-          //     'https://firebasestorage.googleapis.com/v0/b/' +
-          //       bucket.name +
-          //       '/o/' +
-          //       encodeURIComponent(file.metadata.name) +
-          //       '?alt=media&token=' +
-          //       uuid
-          //   );
-
-          //   let myUrl;
-          //   storage
-          //     .child(result[0].metadata.name)
-          //     .getDownloadURL()
-          //     .then((url) => {
-          //       myUrl = url;
-          //     });
-
           res.status(200).json({
             message: 'It worked!',
             url,
